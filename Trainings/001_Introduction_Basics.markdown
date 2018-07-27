@@ -1,11 +1,3 @@
----
-layout: post
-title:  "First Alpine Linux Containers"
-author: "@jimcodified"
-date:   2017-09-19
-categories: beginner
-tags: [linux,operations,developer]
----
 
 In this lab you will run a popular, free, lightweight container and explore the basics of how containers work, how the Docker Engine executes and isolates containers from each other. If you already have experience running containers and basic Docker commands you can probably skip this intro exercise.
 

@@ -1,12 +1,3 @@
----
-layout: post
-title:  "Docker Networking Hands-on Lab"
-date:   2017-01-20
-tags: [operations,networking]
-categories: intermediate
-terms: 2
----
-
 In this lab you will learn about key Docker Networking concepts. You will get your hands dirty by going through examples of a few basic networking concepts, learn about Bridge networking, and finally Overlay networking.
 
 > **Difficulty**: Beginner to Intermediate

@@ -1,12 +1,3 @@
----
-layout: post
-title:  "Docker Volumes"
-date:   2017-01-25
-author: "@lucjuggery"
-tags: [linux,developer,operations, community]
-categories: beginner
----
-
 # Understanding what is this volume thing
 
 In this lab, we will illustrate the concept of volume. We will see how to use volume
