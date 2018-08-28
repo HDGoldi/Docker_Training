@@ -14,7 +14,7 @@ We will first illustrate how data is **not** persisted outside of a container by
 Let's run an interactive shell within an alpine container named c1.
 
 ```.term1
-docker container run --name c1 -ti alpine sh
+docker run --name c1 -ti alpine sh
 ```
 
 We will create the /data folder and a dummy hello.txt file in it.
@@ -35,13 +35,13 @@ Let's inspect our container in order to get the location of the container's laye
 We can use the `inspect` command and then scroll into the output until the **GraphDriver** key, like the following.
 
 ```.term1
-docker container inspect c1
+docker inspect c1
 ```
 
 Or we can directly use the Go template notation and get the content of the **GraphDriver** keys right away.
 
 ```.term1
-docker container inspect -f "{{ "{{ json .GraphDriver "}}}}" c1 | python -m json.tool
+docker inspect -f "{{ "{{ json .GraphDriver "}}}}" c1 | python -m json.tool
 ```
 
 You should then get an output like the following (the ID will not be the same though)
@@ -68,7 +68,7 @@ ls /var/lib/docker/overlay2/[YOUR_ID]/diff/data
 What happen if we remove our c1 container now ? Let's try.
 
 ```.term1
-docker container rm c1
+docker rm c1
 ```
 
 It seems the folder defined in the **UpperDir** above does not exist anymore. Do you confirm that ? Try running the `ls` command again and see the results.
@@ -101,7 +101,7 @@ docker image build -t img1 .
 We will then create a container in interactive mode (using -ti flags) from this image and name it c2.
 
 ```.term1
-docker container run --name c2 -ti img1
+docker run --name c2 -ti img1
 ```
 
 We should then end up in a shell within the container. From there, we will go into /data and create a hello.txt file.
@@ -116,7 +116,7 @@ Let's exit the container making sure it remains running: use the Control-P / Con
 Use the following command to make sure it's still running.
 
 ```.term1
-docker container ls
+docker ls
 ```
 
 Note: the container, named c2, should be listed there.
@@ -125,13 +125,13 @@ We will now inspect this container in order to get the location of the volume (d
 We can use the inspect command and then scroll into the output until we find the **Mounts** key...
 
 ```.term1
-docker container inspect c2
+docker inspect c2
 ```
 
 Or we can directly use the Go template notation and get the content of the **Mounts** keys right away.
 
 ```.term1
-docker container inspect -f "{{ "{{ json .Mounts "}}}}"  c2 | python -m json.tool
+docker inspect -f "{{ "{{ json .Mounts "}}}}"  c2 | python -m json.tool
 ```
 
 You should then get an output like the following (the ID will not be the same though)
@@ -158,7 +158,7 @@ Copy your own path (the one under the **Source** key) and make sure the **hello.
 We now remove the c2 container.
 
 ```.term1
-docker container stop c2 && docker container rm c2
+docker stop c2 && docker rm c2
 ```
 
 Check that the folder defined under the **Source** key is still there and contains **hello.txt** file.
@@ -167,7 +167,7 @@ From the above, we can see that a volume bypasses the union filesystem and is no
 
 ## Defining a volume at runtime
 
-We have seen volume defined in a Dockerfile, we will see they can also be defined at runtime using the **-v** flag of the **docker container run** command.
+We have seen volume defined in a Dockerfile, we will see they can also be defined at runtime using the **-v** flag of the **docker run** command.
 
 Let's create a container from the alpine image, we'll use the -d option so it runs in background and also define a volume on /data as we've done previously.
 In order the PID 1 process remains active, we use the following command that pings Google DNS and log the output in a file within the /data folder.
@@ -179,13 +179,13 @@ ping 8.8.8.8 > /data/ping.txt
 The container is ran that way:
 
 ```.term1
-docker container run --name c3 -d -v /data alpine sh -c 'ping 8.8.8.8 > /data/ping.txt'
+docker run --name c3 -d -v /data alpine sh -c 'ping 8.8.8.8 > /data/ping.txt'
 ```
 
 Let's inspect the container and get the **Mounts** key using the Go template notation.
 
 ```.term1
-docker container inspect -f "{{ "{{ json .Mounts "}}}}" c3 | python -m json.tool
+docker inspect -f "{{ "{{ json .Mounts "}}}}" c3 | python -m json.tool
 ```
 
 We have pretty much the same output as we had when we defined the volume in the Dockerfile.
@@ -281,7 +281,7 @@ We can now use this volume and mount it on a specific path of a container. We wi
 Note: /usr/share/nginx/html is the default folder served by nginx. It contains 2 files: index.html and 50x.html
 
 ```.term1
-docker container run --name www -d -p 8080:80 -v html:/usr/share/nginx/html nginx
+docker run --name www -d -p 8080:80 -v html:/usr/share/nginx/html nginx
 ```
 
 Note: we use the -p option to map the nginx default port (80) to a port on the host (8080). We will come back to this in the lesson dedicated to the networking.
@@ -310,10 +310,10 @@ Note: please reload the page if you cannot see the changes.
 
 ## Mount host's folder into a container
 
-The last item we will talk about is named bind-mount and consist of mounting a host's folder into a container's folder. This is done using the **-v** option of the **docker container run** command. Instead of specifying one single path (as we did when defining volumes) we will specified 2 paths separated by a column.
+The last item we will talk about is named bind-mount and consist of mounting a host's folder into a container's folder. This is done using the **-v** option of the **docker run** command. Instead of specifying one single path (as we did when defining volumes) we will specified 2 paths separated by a column.
 
 ```
-docker container run -v HOST_PATH:CONTAINER_PATH [OPTIONS] IMAGE [CMD]
+docker run -v HOST_PATH:CONTAINER_PATH [OPTIONS] IMAGE [CMD]
 ```
 
 Note: HOST_PATH and CONTAINER_PATH can be a folder or file. HOST_PATH must exist before running this command.
@@ -327,7 +327,7 @@ Several cases to consider:
 Let's run an alpine container bind mounting the local /tmp folder inside the container /data folder.
 
 ```.term1
-docker container run -ti -v /tmp:/data alpine sh
+docker run -ti -v /tmp:/data alpine sh
 ```
 
 We end up in a shell inside our container. By default, there is no /data folder in an alpine distribution. What is the impact of the bind-mount ?
@@ -343,7 +343,7 @@ The /data folder has been created inside the container and it contains the conte
 Let's run a nginx container bind mounting the local /tmp folder inside the /usr/share/nginx/html folder of the container.
 
 ```.term1
-docker container run -ti -v /tmp:/usr/share/nginx/html nginx bash
+docker run -ti -v /tmp:/usr/share/nginx/html nginx bash
 ```
 
 Are the default index.html and 50x.html files still there in the container's /usr/share/nginx/html folder ?

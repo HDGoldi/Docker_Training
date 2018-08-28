@@ -11,7 +11,7 @@ We will then see how to get the details of an image through the inspection and e
 Let's start by running an interactive shell in a ubuntu container:
 
 ```.term1
-docker container run -ti ubuntu bash
+docker run -ti ubuntu bash
 ```
 
 As you know from earlier labs, you just grabbed the image called "ubuntu" from Docker Store and are now running the bash shell inside that container.[^1]
@@ -35,15 +35,15 @@ Now let us pretend this new figlet application is quite useful and you want to s
 To start, we need to get the ID of this container using the ls command (do not forget the -a option as the non running container are not returned by the ls command).
 
 ```.term1
-docker container ls -a
+docker ls -a
 ```
 
-Before we create our own image, we might want to inspect all the changes we made. Try typing the command `docker container diff <container ID>` for the container you just created. You should see a list of all the files that were added or changed to in the container when you installed figlet. Docker keeps track of all of this information for us. This is part of the *layer* concept we will explore in a few minutes.
+Before we create our own image, we might want to inspect all the changes we made. Try typing the command `docker diff <container ID>` for the container you just created. You should see a list of all the files that were added or changed to in the container when you installed figlet. Docker keeps track of all of this information for us. This is part of the *layer* concept we will explore in a few minutes.
 
 Now, to create an image we need to "commit" this container. Commit creates an image locally on the system running the Docker engine. Run the following command, using the container ID you retrieved, in order to commit the container and create an image out of it.
 
 ```
-docker container commit CONTAINER_ID
+docker commit CONTAINER_ID
 ```
 
 That's it - you have created your first image! Once it has been commited, we can see the newly created image in the list of available images.
@@ -84,7 +84,7 @@ Here is a graphical view of what we just completed:
 Now we will run a container based on the newly created *ourfiglet* image:
 
 ```.term1
-docker container run ourfiglet figlet hello
+docker run ourfiglet figlet hello
 ```
 
 As the figlet package is present in our *ourfiglet* image, the command returns the following output:
@@ -150,7 +150,7 @@ This is what you just completed:
 We then start a container to check that our applications runs correctly:
 
 ```.term1
-docker container run hello:v0.1
+docker run hello:v0.1
 ```
 
 You should then have an output similar to the following one (the ID will be different though).
@@ -285,13 +285,6 @@ Up next, we will look at more sophisticated applications that run across several
 
 - *Layers* - A Docker image is built up from a series of layers. Each layer represents an instruction in the image's Dockerfile. Each layer except the last one is read-only.
 - *Dockerfile* - A text file that contains all the commands, in order, needed to build a given image. The [Dockerfile reference](https://docs.docker.com/engine/reference/builder) page lists the various commands and format details for Dockerfiles.
-- *Volumes* - A special Docker container layer that allows data to persist and be shared separately from the container itself. Think of volumes as a way to abstract and manage your persistent data separately from the application itself.
+- *Volumes* - A special docker layer that allows data to persist and be shared separately from the container itself. Think of volumes as a way to abstract and manage your persistent data separately from the application itself.
 
 ---
-## Footnotes
-
-[^1]: A note on images and the public Docker Store (AKA Docker Hub): Docker registries are subdivided in to many *repositories*. This is the same for both our public registries like Docker Store / Docker Hub, as well as Docker Trusted Registries that you might run in your own environment. Image names must be unique and are specified in the format `<repository>/<image>:<tag>`. In our exercises, we pulled images called "ubuntu" and "alpine". Since there is no repository specified we pulled from a default public repository called "library" which is maintained by us at Docker. And since we did not specify a tag, the default is to look for a tag named "latest" and use that. The tags generally specify versions (although this is not a requirement). 
-
-[^2]: Type `vi index.js` then once the editor loads hit the `i` key. You can now type each of the commands as shown in the example. When you are finished hit the `<esc>` key then type `:wq` and that will save the file and take you back to the command prompt. You can type `ls` at the command prompt to ensure your *index.js* file is there or type `cat index.js` to make sure all the code is in the file. If you make a mistake in the editor and you have a hard time navigating the editor it might be easier to start fresh: simply type `<esc>` and then `:wq` if you are in the editor and then when you are back to the command line type `rm index.js` to delete the file and then start again.
-
-[^3]: Type `vi Dockerfile` then once the editor loads hit the `i` key. Type in each line of the Dockerfile code as shown in the example - capitalization is important! - then hit the `<esc>` key followed by `:wq`. To verify your Dockerfile exists and is correct type `cat Dockerfile`. If you make a mistake in the editor and you have a hard time navigating the editor it might be easier to start fresh: simply type `<esc>` and then `:wq` if you are in the editor and then when you are back to the command line type `rm Dockerfile` and then start again.

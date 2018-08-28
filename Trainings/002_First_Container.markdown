@@ -1,17 +1,5 @@
 In this lab, we will look at some basic Docker commands and a simple build-ship-run workflow. We'll start by running some simple containers, then we'll use a Dockerfile to build a custom app. Finally, we'll look at how to use bind mounts to modify a running container as you might if you were actively developing using Docker.
 
-> **Difficulty**: Beginner (assumes no familiarity with Docker)
-
-> **Time**: Approximately 30 minutes
-
-> **Tasks**:
->
-
-> * [Task 0: Prerequisites](#Task_0)
-> * [Task 1: Run some simple Docker containers](#Task_1)
-> * [Task 2: Package and run a custom app using Docker](#Task_2)
-> * [Task 3: Modify a Running Website](#Task_3)
-
 ## <a name="task0"></a>Task 0: Prerequisites
 
 You will need all of the following to complete this lab:
@@ -48,7 +36,7 @@ In this step we're going to start a new container and tell it to run the `hostna
 1. Run the following command in your Linux console.
 
     ```.term1
-    docker container run alpine hostname
+    docker run alpine hostname
     ```
 
     The output below shows that the `alpine:latest` image could not be found locally. When this happens, Docker automatically *pulls* it from Docker Hub.
@@ -69,7 +57,7 @@ In this step we're going to start a new container and tell it to run the `hostna
     List all containers.
 
     ```.term1
-    docker container ls --all
+    docker ls --all
     ```
 
     Notice that your Alpine Linux container is in the `Exited` state.
@@ -89,10 +77,10 @@ You can run a container based on a different version of Linux than is running on
 
 In the next example, we are going to run an Ubuntu Linux container on top of an Alpine Linux Docker host (Play With Docker uses Alpine Linux for its nodes).
 
-1. Run a Docker container and access its shell.
+1. Run a docker and access its shell.
 
     ```.term1
-    docker container run --interactive --tty --rm ubuntu bash
+    docker run --interactive --tty --rm ubuntu bash
     ```
 
     In this example, we're giving Docker three parameters:
@@ -101,7 +89,7 @@ In the next example, we are going to run an Ubuntu Linux container on top of an 
     * `--tty` allocates a pseudo-tty.
     * `--rm` tells Docker to go ahead and remove the container when it's done executing.
 
-    The first two parameters allow you to interact with the Docker container.
+    The first two parameters allow you to interact with the docker.
 
     We're also telling the container to run `bash` as its main process (PID 1).
 
@@ -129,7 +117,7 @@ In the next example, we are going to run an Ubuntu Linux container on top of an 
     exit
     ```
 
-    > **Note:** As we used the `--rm` flag when we started the container, Docker removed the container when it stopped. This means if you run another `docker container ls --all` you won't see the Ubuntu container.
+    > **Note:** As we used the `--rm` flag when we started the container, Docker removed the container when it stopped. This means if you run another `docker ls --all` you won't see the Ubuntu container.
 
 4. For fun, let's check the version of our host VM.
 
@@ -160,7 +148,7 @@ Background containers are how you'll run most applications. Here's a simple exam
 1. Run a new MySQL container with the following command.
 
     ```.term1
-    docker container run \
+    docker run \
     --detach \
     --name mydb \
     -e MYSQL_ROOT_PASSWORD=my-secret-pw \
@@ -196,7 +184,7 @@ Background containers are how you'll run most applications. Here's a simple exam
 2. List the running containers.
 
     ```.term1
-    docker container ls
+    docker ls
     ```
 
     Notice your container is running.
@@ -206,13 +194,13 @@ Background containers are how you'll run most applications. Here's a simple exam
     3f4e8da0caf7        mysql:latest        "docker-entrypoint..."   52 seconds ago      Up 51 seconds       3306/tcp            mydb
     ```
 
-3. You can check what's happening in your containers by using a couple of built-in Docker commands: `docker container logs` and `docker container top`.
+3. You can check what's happening in your containers by using a couple of built-in Docker commands: `docker logs` and `docker top`.
 
     ```.term1
-    docker container logs mydb
+    docker logs mydb
     ```
 
-    This shows the logs from the MySQL Docker container.
+    This shows the logs from the MySQL docker.
 
     ```
       <output truncated>
@@ -224,7 +212,7 @@ Background containers are how you'll run most applications. Here's a simple exam
       Let's look at the processes running inside the container.
 
     ```.term1
-      docker container top mydb
+      docker top mydb
     ```
 
     You should see the MySQL daemon (`mysqld`) is running in the container.
@@ -236,9 +224,9 @@ Background containers are how you'll run most applications. Here's a simple exam
 
     Although MySQL is running, it is isolated within the container because no network ports have been published to the host. Network traffic cannot reach containers from the host unless ports are explicitly published.
 
-4. List the MySQL version using `docker container exec`.
+4. List the MySQL version using `docker exec`.
 
-    `docker container exec` allows you to run a command inside a container. In this example, we'll use `docker container exec` to run the command-line equivalent of `mysql --user=root --password=$MYSQL_ROOT_PASSWORD --version` inside our MySQL container.
+    `docker exec` allows you to run a command inside a container. In this example, we'll use `docker exec` to run the command-line equivalent of `mysql --user=root --password=$MYSQL_ROOT_PASSWORD --version` inside our MySQL container.
 
     ```.term1
     docker exec -it mydb \
@@ -252,7 +240,7 @@ Background containers are how you'll run most applications. Here's a simple exam
     mysql  Ver 14.14 Distrib 5.7.19, for Linux (x86_64) using  EditLine wrapper
     ```
 
-5. You can also use `docker container exec` to connect to a new shell process inside an already-running container. Executing the command below will give you an interactive shell (`sh`) inside your MySQL container.  
+5. You can also use `docker exec` to connect to a new shell process inside an already-running container. Executing the command below will give you an interactive shell (`sh`) inside your MySQL container.  
 
     ```.term1
     docker exec -it mydb sh
@@ -365,12 +353,12 @@ Let's have a look at the  Dockerfile we'll be using, which builds a simple websi
     Successfully tagged <your docker ID>/linux_tweet_app:latest
     ```
 
-6. Use the `docker container run` command to start a new container from the image you created.
+6. Use the `docker run` command to start a new container from the image you created.
 
     As this container will be running an NGINX web server, we'll use the `--publish` flag to publish port 80 inside the container onto port 80 on the host. This will allow traffic coming in to the Docker host on port 80 to be directed to port 80 in the container. The format of the `--publish` flag is `host_port`:`container_port`.
 
     ```.term1
-    docker container run \
+    docker run \
     --detach \
     --publish 80:80 \
     --name linux_tweet_app \
@@ -386,12 +374,12 @@ Let's have a look at the  Dockerfile we'll be using, which builds a simple websi
 8. Once you've accessed your website, shut it down and remove it.
 
     ```.term1
-    docker container rm --force linux_tweet_app
+    docker rm --force linux_tweet_app
     ```
 
     > **Note:** We used the `--force` parameter to remove the running container without shutting it down. This will ungracefully shutdown the container and permanently remove it from the Docker host.
     >
-    > In a production environment you may want to use `docker container stop` to gracefully stop the container and leave it on the host. You can then use `docker container rm` to permanently remove it.
+    > In a production environment you may want to use `docker stop` to gracefully stop the container and leave it on the host. You can then use `docker rm` to permanently remove it.
 
 
 ## <a name="Task_3"></a>Task 3: Modify a running website
@@ -413,7 +401,7 @@ When you use a bind mount, a file or directory on the host machine is mounted in
     Be sure to run this command from within the `linux_tweet_app` directory on your Docker host.
 
     ```.term1
-    docker container run \
+    docker run \
     --detach \
     --publish 80:80 \
     --name linux_tweet_app \
@@ -455,7 +443,7 @@ To show this, stop the current container and re-run the `1.0` image without a bi
 2. Rerun the current version without a bind mount.
 
     ```.term1
-    docker container run \
+    docker run \
     --detach \
     --publish 80:80 \
     --name linux_tweet_app \
@@ -510,7 +498,7 @@ To persist the changes you made to the `index.html` file into the image, you nee
 1. Run a new container from the new version of the image.
 
     ```.term1
-    docker container run \
+    docker run \
     --detach \
     --publish 80:80 \
     --name linux_tweet_app \
@@ -530,7 +518,7 @@ To persist the changes you made to the `index.html` file into the image, you nee
     Notice that this command maps the new container to port 8080 on the host. This is because two containers cannot map to the same port on a single Docker host.
 
     ```.term1
-    docker container run \
+    docker run \
     --detach \
     --publish 8080:80 \
     --name old_linux_tweet_app \
@@ -611,9 +599,5 @@ To persist the changes you made to the `index.html` file into the image, you nee
     ```
 
 You can browse to `https://hub.docker.com/r/<your docker id>/` and see your newly-pushed Docker images. These are public repositories, so anyone can pull the image - you don't even need a Docker ID to pull public images. Docker Hub also supports private repositories.
-
-### Next Step
-
-Check out this introduction to orchestration with [Docker Swarm Stack Introduction](/swarm-stack-intro)
 
 ---
