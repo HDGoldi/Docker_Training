@@ -73,16 +73,16 @@ Might not work?
 ```
 
 ```.term1
-docker ls
+docker ps
 ```
 ```
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 
-Since no containers are running, you see a blank line. Let's try a more useful variant: `docker ls -a` 
+Since no containers are running, you see a blank line. Let's try a more useful variant: `docker ps -a` 
 
 ```.term1
-docker ls -a
+docker ps -a
 ```
 ```
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
@@ -113,7 +113,7 @@ docker run alpine ls
 Once again run the
 
 ```.term1
-docker ls -a
+docker ps -a
 ```
 
 command again and you should see output similar to the following:
@@ -155,7 +155,7 @@ Background containers are how you'll run most applications. Here's a simple exam
 2. List the running containers.
 
     ```.term1
-    docker ls
+    docker ps
     ```
 
     Notice your container is running.
